@@ -3,3 +3,4 @@ abc.txt
 *.log
 **/bin
 testreports.xml
+*.exe
