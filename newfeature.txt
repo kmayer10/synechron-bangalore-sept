@@ -4,3 +4,4 @@ merge demo
 resolving the conflict
 Vishal's Changes
 protected branch demo
+merge demo
