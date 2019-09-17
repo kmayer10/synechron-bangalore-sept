@@ -3,3 +3,5 @@ merge demo in master
 merge demo
 resolving the conflict
 added new line
+Vishal's Changes
+protected branch demo
