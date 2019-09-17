@@ -1,2 +1,4 @@
 adding new file for branch demo
 merge demo in master
+merge demo
+resolving the conflict
