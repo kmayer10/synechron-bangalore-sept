@@ -3,3 +3,4 @@ merge demo in master
 merge demo
 resolving the conflict
 protected branch demo
+merge demo
