@@ -1,0 +1,4 @@
+target/
+abc.txt
+*.log
+**/bin
