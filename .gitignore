@@ -2,3 +2,4 @@ target/
 abc.txt
 *.log
 **/bin
+testreport.xml
