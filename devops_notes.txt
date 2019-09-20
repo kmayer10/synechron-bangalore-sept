@@ -1,0 +1,236 @@
+Docker Installation
+=====================================
+sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install docker-ce docker-ce-cli containerd.io
+sudo systemctl start docker
+docker --version
+sudo docker run hello-world
+
+
+======================================
+1  exit
+    2  docker ps
+    3  docker ps -a
+    4  docker system df
+    5  docker ps -aq
+    6  docker ps -lq
+    7  docker run -it centos /bin/bash
+    8  docker system df
+    9  docker run -it centos /bin/bash
+   10  docker run jptazzo/clock
+   11  docker run jpetazzo/clock
+   12  docker run -d jpetazzo/clock
+   13  docker ps
+   14  docker logs charming_payne
+   15  docker logs -3 charming_payne
+   16  docker logs --tail 3 charming_payne
+   17  docker logs --tail 1 charming_payne
+   18  docker logs --tail 1 --follow charming_payne
+   19  docker ps -a
+   20  docker rm a974f1b11ed0
+   21  docker rm 9ceb961bdd67
+   22  docker kill 9ceb961bdd67
+   23  docker rm 9ceb961bdd67
+   24  docker ps -a
+   25  docker start bbb0d5913dd3
+   26  docker ps
+   27  docker exec -i -t bbb0d5913dd3 /bin/bash
+   28  docker start -i 1f837c03dd6a
+   29  history
+
+
+==================================================
+
+Ansible Installation
+
+==================================================
+
+sudo yum install -y wget
+
+sudo wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+sudo yum install -y ansible
+
+ansible --version
+
+
+
+--------------------------
+docker ps -a
+docker diff 5d405544cbf1
+docker commit -m "install git" -a "Mitali" 5d405544cbf1 centos:installedgit-1.8
+
+----------------------------------------
+master  - 18.236.73.180:centos@ip-172-31-19-49
+$sudo su -
+
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDDC1l/SlqOp2UR3GtFhHMF0D1mV+NjL8pehslKoIarwwyQeE5RuNMLGOgpIg19e5Mj4BvSNq001P81/pYiomYIxGCW6yPM2Jx/HvgZc75BvC3XjQGnbUivp/NGezUcALBeiXeTHPmYuCLTqIDkLLCC76JyeWuoKUJN4N5qqlyWGkNOC22Vv5U6foGZar73ZYhz4KSW9kX0IuSGRP8mW/yybS5ivyJvgZopzm8N6OBVhGOxSagv3vqIXQ+2L4VlKnHfk0IVoP1nsK22i1uI89KBPTh9IdbEVoYplC6632AzxsmfpVHoxR1h2YZE3Jk67yJd8/Mo/ZFQs9wicOdDFg5t root@ip-172-31-19-49.us-west-2.compute.internal
+
+
+
+
+[root@ip-172-31-19-49 ~]# ansible 54.186.192.168 -a "uname -a"
+ 
+
+[root@ip-172-31-19-49 ~]#  ansible 54.186.192.168 -a "cat /ect/redhat-release"
+
+
+[root@ip-172-31-19-49 ~]#  ansible 54.186.192.168 -a "cat /etc/redhat-release"
+
+[root@ip-172-31-19-49 ~]#  ansible 54.186.192.168 -a "service ntpd status"
+
+[root@ip-172-31-19-49 ~]#  ansible 54.186.192.168 -m user -a "name=thinknyx state=present"
+
+[root@ip-172-31-19-49 ~]#  ansible 54.186.192.168 -m file -a "path=/var/tmp/thinknyx mode=777  state=touch"
+
+[root@ip-172-31-19-49 ~]#  ansible 54.186.192.168 -m file -a "path=/var/thinknyx/test mode=777  state=directory"
+
+
+
+vi user.yml
+---
+#My First playbook
+- name: First Play
+  hosts: sync
+
+  tasks: 
+    - name: creating group
+      group: name=team_thinknyx state=present
+    - name: creating user
+      user: 
+        name: mitali
+        state: present
+        group: team_thinknyx
+
+- name: Install Packages and configure Service
+  hosts: sync
+  tasks: 
+   - name: Installing GIT
+     yum: name=git state=present
+   - name: Installing NTP
+     yum: 
+       name: ntp
+       state: present
+   - name: Installing NTPD service
+     yum: 
+       name: ntpd
+       state: started
+       enabled: yes
+
+- name: Copy file service
+  hosts: sync
+  tasks: 
+   - name: Copying file
+     copy:
+       src: /root/ansible_copy_file.txt
+       dest: /root/ansible_copy_file.txt
+
+- name: Download foo.conf
+  hosts: sync
+  tasks: 
+   - name: Copying file
+     get_url: 
+       url: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRW2qYJwXIRFAkJX__5fP8PfYh4fOmVkBIJ73dFhbLwZAd9QMQD
+       dest: /etc/foo.pdf
+       mode: '0440'
+
+ --
+--------------
+- name: Install Docker
+  hosts: sync
+  tasks: 
+  - name: Installing Docker
+    package:
+        name: docker-ce
+        state: latest
+        become: yes
+--------------
+using variable 
+vi user.yml
+---
+#My First playbook
+- name: First Play
+  hosts: "{{ groupname }}"
+
+  tasks: 
+    - name: creating group
+      group: name=team_thinknyx state=present
+    - name: creating user
+      user: 
+        name: mitali
+        state: present
+        group: team_thinknyx
+
+- name: Install Packages and configure Service
+  hosts: "{{ groupname }}"
+  tasks: 
+   - name: Installing GIT
+     yum: name="{{ packgname }}" state=present
+   - name: Installing NTP
+     yum: 
+       name: ntp
+       state: present
+   - name: Installing NTPD service
+     yum: 
+       name: ntpd
+       state: started
+       enabled: yes
+
+- name: Copy file service
+  hosts: "{{ groupname }}"
+  tasks: 
+   - name: Copying file
+     copy:
+       src: /root/ansible_copy_file.txt
+       dest: /root/ansible_copy_file.txt
+
+- name: Download foo.conf
+  hosts: "{{ groupname }}"
+  tasks: 
+   - name: Copying file
+     get_url: 
+       url: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRW2qYJwXIRFAkJX__5fP8PfYh4fOmVkBIJ73dFhbLwZAd9QMQD
+       dest: /etc/foo.pdf
+       mode: '0440'
+
+ --
+
+
+
+$ansible-playbook user.yml --list-hosts
+$ansible-playbook user.yml --syntax-check
+$ansible-playbook user.yml --check
+$ansible-playbook user.yml
+$ansible-playbook user.yml --extra-vars "groupname=sync packgname=maven"
+
+$ansible-vault edit vault-demo.yml
+
+https://gist.github.com/yonglai/d4617d6914d5f4eb22e4e5a15c0e9a03
+
+
+
+------------------------------------
+node server 54.186.192.168 : centos@ip-172-31-16-216 
+
+
+
+------------------------------------------------
+Jenkins inside docker container
+
+
+mkdir /var/jenkins_home
+docker run -d -p 8080:8080 -p 50000:50000 -v /var/jenkins_home:/var/jenkins_home --name jenkins jenkins/jenkins:lts
+
+cat /var/
+
+[root@ip-172-31-16-216 ~]# cat /var/jenkins_home/secrets/initialAdminPassword
+c2de910d52c24489811a2c6743f698c2
+
+http://54.186.192.168:8080/
+
+
+
+
+
+
